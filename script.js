@@ -1,4 +1,52 @@
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
+let editIndex = null;
+
+function renderProjects() {
+  const list = document.getElementById('projectList');
+  list.innerHTML = '';
+
+  projects.forEach((proj, index) => {
+    const div = document.createElement('div');
+    div.classList.add('project-card');
+
+    div.innerHTML = `
+      <h3>${proj.title}</h3>
+      <p>${proj.description}</p>
+      <p>📅 ${proj.date || 'Sem data'}</p>
+
+      <div class="progress-bar">
+        <div class="progress" style="width:${proj.progress || 0}%"></div>
+      </div>
+      <p>${proj.progress || 0}% concluído</p>
+
+      ${proj.image ? `<img src="${proj.image}">` : ''}
+
+      <button onclick="editProject(${index})">Editar</button>
+      <button onclick="deleteProject(${index})">Excluir</button>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+function saveProject() {
+  const title = document.getElementById('title').value;
+  const description = document.getElementById('description').value;
+  const date = document.getElementById('date').value;
+  const progress = document.getElementById('progress').value;
+  const imageInput = document.getElementById('image');
+
+  if (!title || !description) return;
+
+  const existingImage = editIndex !== null ? projects[editIndex].image : null;
+
+  const reader = new FileReader();
+
+  reader.onload = function () {
+    const image = reader.result;
+    finalizeSave(image);
+  };
+
   if (imageInput.files[0]) {
     reader.readAsDataURL(imageInput.files[0]);
   } else {
