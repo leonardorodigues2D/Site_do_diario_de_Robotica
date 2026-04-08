@@ -17,7 +17,6 @@ function renderProjects() {
       <div class="progress-bar">
         <div class="progress" style="width:${proj.progress || 0}%"></div>
       </div>
-      <p>${proj.progress || 0}% concluído</p>
 
       ${proj.image ? `<img src="${proj.image}">` : ''}
 
@@ -43,8 +42,7 @@ function saveProject() {
   const reader = new FileReader();
 
   reader.onload = function () {
-    const image = reader.result;
-    finalizeSave(image);
+    finalizeSave(reader.result);
   };
 
   if (imageInput.files[0]) {
